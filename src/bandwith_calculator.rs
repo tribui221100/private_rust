@@ -30,16 +30,25 @@ fn get_datarate() -> f64{
         let data_rate: f64 = data_rate.trim().parse().expect("Please type a number!");
         return data_rate;
 }
-pub fn calculate()
+
+fn bandwith_calculator(count: u32, rate: f64) -> f64 {
+    count as f64 * rate
+}
+
+fn is_overload(total_bw: f64) -> bool{
+    total_bw > MAX_ETHERNET_BW
+}
+
+pub fn run()
 {
     let l_sensor_count = get_sensorcount();
     let l_data_rate = get_datarate();
     
-    let total_bandwidth = l_sensor_count as f64 * l_data_rate;
+    let total_bandwidth = bandwith_calculator(l_sensor_count,l_data_rate);   
 
-    if total_bandwidth > MAX_ETHERNET_BW {
+    if is_overload(total_bandwidth){
         println!("Ethernet overload risk!");
     } else {
         println!("Safe bandwidth");
-    }   
+    }
 }
