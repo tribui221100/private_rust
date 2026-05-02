@@ -1,3 +1,4 @@
+mod bandwith_calculator;
 fn main() {
-    println!("Hello, world!");
+    bandwith_calculator::calculate();
 }
