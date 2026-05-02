@@ -52,3 +52,26 @@ pub fn run()
         println!("Safe bandwidth");
     }
 }
+
+// --- UNIT TESTS ---
+// To run unit test -> terminal: cargo  llvm-cov --html
+#[cfg(test)]
+mod test{
+    use super::*;
+
+    #[test]
+    fn test_bandwith_calculator() {
+        assert_eq!(bandwith_calculator(4,25.0),100.0);
+        assert_eq!(bandwith_calculator(4,12.5),50.0);
+        assert_eq!(bandwith_calculator(4,0.0),0.0);
+    }
+
+    #[test]
+    fn test_overload()
+    {
+        assert_eq!(is_overload(99.9), false);
+        assert_eq!(is_overload(100.0), false);
+        assert_eq!(is_overload(100.1), true);
+    }
+
+}
