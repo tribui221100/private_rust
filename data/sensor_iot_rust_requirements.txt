@@ -1,0 +1,97 @@
+Sensor Data, Embedded & IoT — Rust Practice Requirements
+==========================================================
+Goal: Build skills from starter to advanced using Rust for reading, processing,
+and moving sensor data on constrained devices and connected systems.
+
+-----------------------------------------------------------------------------
+REQUIREMENT 1 — Starter: Project & types
+-----------------------------------------------------------------------------
+Set up a no_std-capable library crate (or a std binary that mirrors embedded
+patterns). Define Rust types for a single sensor reading: timestamp (u64 ms),
+sensor_id (u8), and value (f32). Implement Display and Debug. Write unit tests
+that construct readings and assert formatting.
+
+-----------------------------------------------------------------------------
+REQUIREMENT 2 — Starter: Parsing & validation
+-----------------------------------------------------------------------------
+Accept raw bytes (e.g. a fixed 9-byte frame: id, 4-byte little-endian value,
+4-byte timestamp). Parse into your reading type using safe code; return Result
+with a custom error enum (InvalidLength, BadSensorId, etc.). Add tests for
+good and bad inputs.
+
+-----------------------------------------------------------------------------
+REQUIREMENT 3 — Beginner: Collections & iterators
+-----------------------------------------------------------------------------
+Maintain a ring buffer (fixed capacity, no heap if targeting no_std) of the
+last N readings. Implement push, iteration from oldest to newest, and a function
+that returns the moving average of the last k values using iterators (no
+unnecessary allocations in hot path).
+
+-----------------------------------------------------------------------------
+REQUIREMENT 4 — Beginner: Traits & generics
+-----------------------------------------------------------------------------
+Define a trait SensorSource that yields Option<Reading> (or async-ready stub).
+Provide two implementations: a mock that returns synthetic data, and a
+“file replay” that reads recorded samples. Write a generic function
+process_stream<S: SensorSource>(source: &mut S) that counts samples and
+detects out-of-range values via a closure threshold.
+
+-----------------------------------------------------------------------------
+REQUIREMENT 5 — Intermediate: Concurrency (std)
+-----------------------------------------------------------------------------
+Using std, spawn a thread that simulates a sensor producing readings at a fixed
+interval. Use channels (mpsc or crossbeam if you add the crate) to send readings
+to a consumer that aggregates min/max/avg over sliding windows. Shut down cleanly
+with a stop signal (atomic or channel sentinel). Document any unsafe as “not
+used” or justify if you introduce FFI later.
+
+-----------------------------------------------------------------------------
+REQUIREMENT 6 — Intermediate: Async & networking (IoT edge)
+-----------------------------------------------------------------------------
+With tokio (or embassy on embedded if you choose that path), expose an HTTP or
+MQTT client that POSTs or publishes batched JSON readings every M seconds.
+Handle timeouts, retries with backoff, and structured logging (tracing). Keep
+secrets (API keys) out of source via env or build-time config.
+
+-----------------------------------------------------------------------------
+REQUIREMENT 7 — Intermediate: Serialization & schemas
+-----------------------------------------------------------------------------
+Use serde to define a versioned message envelope (schema_version, device_id,
+readings: Vec<Reading>). Serialize to JSON and to a compact binary format
+(postcard, bincode, or cbor). Add round-trip tests and a migration note in
+comments for bumping schema_version.
+
+-----------------------------------------------------------------------------
+REQUIREMENT 8 — Advanced: Embedded HAL / driver boundary
+-----------------------------------------------------------------------------
+Integrate with a real or simulated I²C/SPI peripheral: use an existing platform
+crate (e.g. embedded-hal + a BSP) or mock the HAL traits in tests. Read raw
+registers, convert to physical units (temperature, acceleration), and propagate
+errors with thiserror or a small error type. Ensure no_std paths compile where
+applicable.
+
+-----------------------------------------------------------------------------
+REQUIREMENT 9 — Advanced: Memory, lifetimes, and zero-copy
+-----------------------------------------------------------------------------
+Parse incoming UART/binary stream using lifetimes or owned buffers deliberately:
+either borrow from a scratch buffer for zero-copy views, or use heapless::Vec
+for fixed-capacity payloads. Benchmark or estimate stack usage; avoid unbounded
+Vec growth on the embedded path. Document invariants (e.g. “frame complete
+before parse”).
+
+-----------------------------------------------------------------------------
+REQUIREMENT 10 — Advanced: Reliability & system design
+-----------------------------------------------------------------------------
+Add watchdog-friendly design: bounded work per loop iteration, explicit error
+recovery (sensor reset sequence or re-init), and persistent storage of last
+known good config/calibration (flash abstraction or file on std). Optionally
+integrate defmt for logging on embedded. Deliver a short architecture note in
+code comments: data flow from bus → parse → filter → uplink.
+
+-----------------------------------------------------------------------------
+Success criteria (overall)
+-----------------------------------------------------------------------------
+- Code is split into logical modules (parse, filter, transport, hal).
+- Clippy and tests pass on CI or locally.
+- At least one path demonstrates no_std-friendly patterns even if the main
+  binary uses std for IoT prototyping.
