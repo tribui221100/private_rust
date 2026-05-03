@@ -9,7 +9,7 @@
 #![no_std]
 
 use core::fmt;
-#[derive(Debug, PartialEq)]
+#[derive(PartialEq)]
 
 pub struct SensorData{
     pub timestamp: u32,
@@ -38,5 +38,50 @@ impl fmt::Display for SensorData{
             "[{:>10}ms] Sensor({:03}): {:.2}]",
             &self.timestamp, &self.id, &self.value
         )
+    }
+}
+
+// Debug
+impl fmt::Debug for SensorData{
+    fn fmt (&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+    {
+        f.debug_struct("SensorData")
+            .field("timestamp", &self.timestamp)
+            .field("id", &self.id)
+            .field("value", &self.value)
+            .finish()
+    }
+}
+
+#[cfg(test)]
+mod tests
+{
+    use super::*;
+    extern crate std;
+    use std::format;
+
+    #[test]
+    fn test_sensor_constructor()
+    {
+        let data = SensorData::new(1_2211_2000,125,24.5);
+        assert_eq!(data.timestamp, 1_2211_2000);
+        assert_eq!(data.id, 125);
+        assert_eq!(data.value, 24.5);
+    }
+
+    #[test]
+    fn test_sensor_display()
+    {
+        let data = SensorData::new(500, 1, 1.234);
+        let expected = "[       500ms] Sensor(001): 1.23]";
+        assert_eq!(format!("{}", data), expected);
+    }
+
+    #[test]
+    fn test_sensor_debug()
+    {
+        let data = SensorData::new(500, 1, 1.234);
+        let expected = format!("{:?}", data);
+        assert!(expected.contains("SensorData"));
     }
 }
