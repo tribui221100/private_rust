@@ -1,19 +1,22 @@
-mod bandwith_calculator;
-mod sensor_debugger;
-fn main() {
-    //bandwith_calculator::run();
-    
-    // Requirement 1
-    #[cfg(feature = "req1")]
-    {
-        let sensor1 = sensor_debugger::SensorData::new(100, 1, 25.5);
-        println!("Actual Display output{}",sensor1);
-        println!("Actual Debug output: {:?}", sensor1);
-    }
+mod modules;
+mod ai_cli;
+mod agent;
 
-    // Requirement 2
-    #[cfg(feature = "req2")]
-    {
-        println!("T.B.D");
-    }
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    println!("--- INTIALIZE AI AGENT (RULE-BASED) ---");
+
+    let question = "Please briefly explain the Ownership mechanism in Rust in exactly two sentences.";
+    println!("User asks: {}\n", question);
+
+    // match agent::run_agent(question).await {
+    //     Ok(answer) => {
+    //         println!("Agent phản hồi:");
+    //         println!("{}", answer);
+    //     },
+    //     Err(e) => eprintln!("Errors Occur: {}", e),
+    // }
+
+    Ok(())
 }
+
