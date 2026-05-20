@@ -56,7 +56,7 @@
         });
 
         // Instantiate a new HTTP client
-        let client = reqwest::Client::new();
+        let client: reqwest::Client = reqwest::Client::new();
 
         // Build a POST request to the URL
         let response = client.post(url).json(&body).send().await?;
