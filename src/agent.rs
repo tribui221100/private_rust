@@ -25,3 +25,19 @@
     // - Pass the consolidated prompt into `ai_client::send_to_gemini(&full_prompt)`.
     // - Append `.await` to yield execution control until the response arrives.
     // - Leave the expression open (no trailing semicolon) to implicitly return the final `Result` directly to `main.rs`.
+
+use std::fs;
+use crate::ai_cli;
+
+pub async fn run_agent(prompt: &str) -> Result<String, Box<dyn std::error::Error>> {
+    // Read rules
+    // let rules = fs::read_to_string(agent_rules.md)
+    //                     .map_err(|_| "Không thể đọc file agent_rules.md!")?;
+
+    // Context Integration
+    let full_prompt = format!("User question {}",prompt);
+
+    // Delegate execution to the Client
+    let ai_resp = ai_cli::send_to_gemini(&full_prompt).await?;
+    Ok(ai_resp)
+}
