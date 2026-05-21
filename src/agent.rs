@@ -26,18 +26,112 @@
     // - Append `.await` to yield execution control until the response arrives.
     // - Leave the expression open (no trailing semicolon) to implicitly return the final `Result` directly to `main.rs`.
 
-use std::fs;
-use crate::ai_cli;
-
-pub async fn run_agent(prompt: &str) -> Result<String, Box<dyn std::error::Error>> {
-    // Read rules
-    // let rules = fs::read_to_string(agent_rules.md)
-    //                     .map_err(|_| "Không thể đọc file agent_rules.md!")?;
-
-    // Context Integration
-    let full_prompt = format!("User question {}",prompt);
-
-    // Delegate execution to the Client
-    let ai_resp = ai_cli::send_to_gemini(&full_prompt).await?;
-    Ok(ai_resp)
-}
+    use std::fs;
+    use crate::ai_cli;
+    use std::io::{self, Write};
+    use colored::*;
+    
+    pub async fn run_agent() -> Result<String, Box<dyn std::error::Error>> {
+        // Read rules
+        let rules = include_str!("../agent_rules.md");
+    
+        loop {
+            print!("You: ");
+            io::stdout().flush()?;
+    
+            let mut user_input = String::new();
+            io::stdin().read_line(&mut user_input)?;
+            let user_input = user_input.trim();
+    
+            if user_input.eq_ignore_ascii_case("exit") {
+                println!("Goodbye!");
+                break Ok(Default::default());
+            }
+    
+            if user_input.is_empty() {
+                continue;
+            }
+    
+            // Context Integration
+            let full_prompt = format!(
+                "--- SYSTEM RULES (ALWAYS OBEY) ---\n\
+                {}\n\
+                ----------------------------------\n\
+                User question: {}", 
+                rules, user_input
+            );
+    
+            // Delegate execution to the Client
+            match ai_cli::send_to_gemini(user_input).await {
+                Ok(reply) => {
+                    use syntect::easy::HighlightLines;
+                    use syntect::parsing::SyntaxSet;
+                    use syntect::highlighting::{ThemeSet, Style};
+                    use syntect::util::{as_24_bit_terminal_escaped, LinesWithEndings};
+    
+                    // Load default syntax definitions and themes
+                    let ps = SyntaxSet::load_defaults_newlines();
+                    let ts = ThemeSet::load_defaults();
+                    
+                    // Pick a dark-mode friendly theme: "base16-ocean.dark" or "Solarized (dark)"
+                    let theme = &ts.themes["base16-ocean.dark"];
+                    
+                    // Track state for the code blocks
+                    let mut in_code_block = false;
+                    let mut highligher: Option<HighlightLines> = None;
+    
+                    print!("\n{} ", "Agent:".red().bold());
+    
+                    // Use LinesWithEndings to keep syntect's parser structurally happy
+                    for line in LinesWithEndings::from(&reply) {
+                        let trimmed = line.trim();
+    
+                        // Check for the entry or exit of a code block fence
+                        if trimmed.starts_with("```") {
+                            if !in_code_block {
+                                in_code_block = true;
+                                // Extract language flag (e.g., "rust" from "```rust")
+                                let lang = trimmed.strip_prefix("
+                                    ```").unwrap_or("txt").trim();
+                                let syntax = ps.find_syntax_by_token(lang)
+                                    .unwrap_or_else(|| ps.find_syntax_by_token("txt").unwrap());
+                                
+                                highligher = Some(HighlightLines::new(syntax, theme));
+                                println!(); // Line break before code starts
+                            } else {
+                                in_code_block = false;
+                                highligher = None;
+                                println!(); // Line break when code ends
+                            }
+                            continue;
+                        }
+    
+                        if in_code_block {
+                            if let Some(ref mut hl) = highligher {
+                                // Syntax highlight the code line
+                                let regions = hl.highlight_line(line, &ps).unwrap();
+                                // Convert colors to TrueColor ANSI escape blocks
+                                let escaped = as_24_bit_terminal_escaped(&regions[..], false);
+                                print!("{}", escaped);
+                            } else {
+                                print!("{}", line);
+                            }
+                        } else {
+                            // Regular Markdown formatting outside code blocks
+                            if trimmed.starts_with("### ") || trimmed.starts_with("## ") {
+                                print!("{}", line.cyan().bold());
+                            } else {
+                                print!("{}", line);
+                            }
+                        }
+                    }
+                    // Reset terminal color just in case
+                    print!("\x1b[0m");
+                    println!("{}", "\n----------------------------------------".bright_black());
+                }
+                Err(e) => {
+                    println!("\n❌ Error: {}\n", e);
+                }
+            }
+        }
+    }

@@ -13,3 +13,5 @@ reqwest = { version = "0.12", features = ["json"] } # Thư viện gọi HTTP
 serde = { version = "1.0", features = ["derive"] }  # Thư viện Serialize/Deserialize dữ liệu
 serde_json = "1.0"           
 rig-core = "0.7"
+colored = "2.1"
+syntect = { version = "5.2", features = ["default-syntaxes", "default-themes"] }
