@@ -6,6 +6,7 @@ edition = "2024"
 [features]
 req1 = []
 req2 = []
+ai = []
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }

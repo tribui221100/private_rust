@@ -1,0 +1,10 @@
+# .cargo/config.toml
+[alias]
+# If AI is NOT default:
+run-ai = "run --features ai"
+
+# If AI IS default and you want to disable it:
+run-base = "run --no-default-features"
+
+# You can also alias build commands:
+build-base = "build --no-default-features"
