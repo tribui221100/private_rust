@@ -62,7 +62,7 @@
             );
     
             // Delegate execution to the Client
-            match ai_cli::send_to_gemini(user_input).await {
+            match ai_cli::send_to_gemini(&full_prompt).await {
                 Ok(reply) => {
                     use syntect::easy::HighlightLines;
                     use syntect::parsing::SyntaxSet;
