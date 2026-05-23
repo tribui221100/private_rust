@@ -12,6 +12,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let _ = ai_stack::agent::run_agent().await;
     }
     
+    // Requirement 1
+    #[cfg(feature = "req1")]
+    {
+        let sensor1 = modules::sensor_debugger::SensorData::new(100, 1, 25.5);
+        println!("Actual Display output{}",sensor1);
+        println!("Actual Debug output: {:?}", sensor1);
+    }
+    
     Ok(())
 }
 

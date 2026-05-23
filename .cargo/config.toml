@@ -3,6 +3,12 @@
 # If AI is NOT default:
 run-ai = "run --features ai"
 
+# For REQ1:
+run-req1 = "run --features req1"
+
+# For REQ2:
+run-req2 = "run --features req2"
+
 # If AI IS default and you want to disable it:
 run-base = "run --no-default-features"
 
