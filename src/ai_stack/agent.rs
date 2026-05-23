@@ -28,6 +28,7 @@
 
     use std::fs;
     use crate::ai_stack::ai_cli;
+    use crate::ai_stack::code_creator;
     use std::io::{self, Write};
     use colored::*;
     
@@ -64,6 +65,14 @@
             // Delegate execution to the Client
             match ai_cli::send_to_gemini(&full_prompt).await {
                 Ok(reply) => {
+                    match code_creator::code_generate(user_input, &reply) {
+                        Ok(filename) => {
+                            println!("\n{} File automatically created: {}", "⚙️ [Embedded System]:".green().bold(), filename.yellow());
+                        },
+                        Err(e) => {
+                            eprintln!("\n⚠️ [Embedded Warning]: Cannot create file due to  {:?}", e);
+                        }
+                    };
                     use syntect::easy::HighlightLines;
                     use syntect::parsing::SyntaxSet;
                     use syntect::highlighting::{ThemeSet, Style};
