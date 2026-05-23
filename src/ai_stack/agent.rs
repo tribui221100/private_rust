@@ -27,13 +27,13 @@
     // - Leave the expression open (no trailing semicolon) to implicitly return the final `Result` directly to `main.rs`.
 
     use std::fs;
-    use crate::ai_cli;
+    use crate::ai_stack::ai_cli;
     use std::io::{self, Write};
     use colored::*;
     
     pub async fn run_agent() -> Result<String, Box<dyn std::error::Error>> {
         // Read rules
-        let rules = include_str!("../agent_rules.md");
+        let rules = include_str!("../../agent_rules.md");
     
         loop {
             print!("You: ");
