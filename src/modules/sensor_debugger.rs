@@ -9,17 +9,10 @@
 #![no_std]
 
 use core::fmt;
-#[derive(PartialEq)]
-
-pub struct SensorData{
-    pub timestamp: u32,
-    pub id: u8,
-    pub value: f32
-}
-
+pub use crate::modules::sensor_types::SensorData;
 // Constructor
 impl SensorData{
-    pub const fn new(timestamp: u32, id: u8, value: f32) -> Self
+    pub const fn new(timestamp: u32, id: u8, value: u32) -> Self
     {
         Self{
             timestamp,
@@ -63,16 +56,16 @@ mod tests
     #[test]
     fn test_sensor_constructor()
     {
-        let data = SensorData::new(1_2211_2000,125,24.5);
+        let data = SensorData::new(1_2211_2000,125,24);
         assert_eq!(data.timestamp, 1_2211_2000);
         assert_eq!(data.id, 125);
-        assert_eq!(data.value, 24.5);
+        assert_eq!(data.value, 24);
     }
 
     #[test]
     fn test_sensor_display()
     {
-        let data = SensorData::new(500, 1, 1.234);
+        let data = SensorData::new(500, 1, 10234);
         let expected = "[       500ms] Sensor(001): 1.23]";
         assert_eq!(format!("{}", data), expected);
     }
@@ -80,7 +73,7 @@ mod tests
     #[test]
     fn test_sensor_debug()
     {
-        let data = SensorData::new(500, 1, 1.234);
+        let data = SensorData::new(500, 1, 111234);
         let expected = format!("{:?}", data);
         assert!(expected.contains("SensorData"));
     }
