@@ -10,6 +10,9 @@
 
 ## 2. Code Generation & Constraints
 
+## Requirement link ** /Users/bmt2211/Documents/prust_/mrust_1/data/sensor_iot_rust_requirements.txt
+## File name convention ** Embedded style, according to requirement order
+
 ### A. Idiomatic & Resource-Conscious Rust
 *   **No Allocation in Drivers:** Unless explicitly requested, assume a resource-constrained environment. Avoid heavy allocations (`String`, `Vec`) inside logic loops; prefer stack-allocated arrays `[u8; N]`, slices `&[u8]`, and static trait objects.
 *   **Explicit Error Handling:** Avoid `unwrap()` or `expect()` in core logical snippets. Always leverage idiomatic `Result<T, E>` patterns. Use custom enums or concise `.map_err(|_| "Contextual error")?` closures for upper layer propagation.
