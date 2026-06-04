@@ -6,7 +6,7 @@ impl SensorData {
 
     pub fn parse(slice: &[u8]) -> Result<SensorData,SensorError>{
         
-        // Data structure [id,4 bytes of timestamp, 4 bytes of data]
+        // Data structure [id,4 bytes of timestamp, 4 bytes of data]ß
         
         //1. Sensor Data length check
         if slice.len() < 9{
