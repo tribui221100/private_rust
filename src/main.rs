@@ -1,5 +1,6 @@
 mod modules;
 mod ai_stack;
+mod handson;
 
 use crate::modules::sensor_types::SensorError;
 use colored::*;
@@ -16,14 +17,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     
     // Requirement 1
-    //#[cfg(feature = "req1")]
+    #[cfg(feature = "req1")]
     {
         let sensor1 = modules::sensor_debugger::SensorData::new(100, 1, 25);
         println!("Actual Display output{}",sensor1);
         println!("Actual Debug output: {:?}", sensor1);
     }
     
-    //#[cfg(feature = "req2")]
+    #[cfg(feature = "req2")]
     {
         let rx_frame = [0xAB,0x01,0x20,0xFF,0x54,0x12,0x00,0xAB,0x99,0x10,0x1F];
         let rx_data = crate::modules::sensor_types::SensorData::parse
@@ -44,6 +45,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // External Requirement - Cache
+    #[cfg(feature = "req3")]
     {
         let adc_reader = || {
             thread::sleep(Duration::from_millis(50));
