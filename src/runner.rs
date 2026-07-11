@@ -6,6 +6,7 @@ use std::thread;
 use crate::SensorData;
 use crate::SensorCache;
 use crate::agent;
+use crate::handson::leetcode;
 
 pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
 
@@ -20,6 +21,9 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     #[cfg(feature = "req3")]
     run_req3();
+
+    #[cfg(feature = "handson")]
+    run_handson(3);
 
     Ok(())
 }
@@ -86,4 +90,22 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
         assert_eq!(t3, 95);
         
         println!("\nCongrates.");
+    }
+
+
+    #[cfg(feature = "handson")]
+    pub fn run_handson(num: i8)
+    {
+        match num {
+            3 => {
+                let result = leetcode::Solution::Leet3_LongestSubstring("abcabcbb".to_string());
+                println!("Result for Leet3: {}", result);
+            }
+            13 => {
+                let result = leetcode::Solution::Leet13_Romain2Int("MCMXCIV".to_string());
+                println!("Result for Leet13: {}", result);
+            }
+            _ => println!("Invalid input. Please enter a number between 1 and 3."),
+        }
+
     }

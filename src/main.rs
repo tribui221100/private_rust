@@ -1,6 +1,7 @@
 mod modules;
 mod ai_stack;
 mod runner;
+mod handson;
 
 use crate::modules::sensor_types::SensorData;
 use crate::modules::sensor_cacher::SensorCache;
