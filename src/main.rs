@@ -9,7 +9,9 @@ use crate::ai_stack::agent;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    runner::run().await;
+    println!("main started");
+    let _ = runner::run().await;
+    println!("main finished");
     Ok(())
 }
 

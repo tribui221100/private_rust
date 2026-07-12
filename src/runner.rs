@@ -9,21 +9,36 @@ use crate::agent;
 use crate::handson::leetcode;
 
 pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
-
     #[cfg(feature = "ai")]
-    run_ai().await;
+    {
+        run_ai().await;
+        println!("ai mode running");
+    }
 
     #[cfg(feature = "req1")]
-    run_req1();
+    {
+        run_req1();
+        println!("req1 running");
+    }
 
     #[cfg(feature = "req2")]
-    run_req2();
+    {
+        run_req2();
+        println!("req2 running");
+    }   
 
     #[cfg(feature = "req3")]
-    run_req3();
+    {
+        run_req3();
+        println!("req3 running");
+    }
 
     #[cfg(feature = "handson")]
-    run_handson(3);
+    {
+        println!("handson running");
+        run_handson(13);
+    }
+    
 
     Ok(())
 }
@@ -102,7 +117,7 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
                 println!("Result for Leet3: {}", result);
             }
             13 => {
-                let result = leetcode::Solution::Leet13_Romain2Int("MCMXCIV".to_string());
+                let result = leetcode::Solution::roman_to_int("MCDLXXVI".to_string());
                 println!("Result for Leet13: {}", result);
             }
             _ => println!("Invalid input. Please enter a number between 1 and 3."),

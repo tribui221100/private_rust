@@ -1,3 +1,5 @@
+use std::ptr::read_unaligned;
+
 pub struct Solution;
 
 impl Solution{
@@ -44,7 +46,44 @@ impl Solution{
 
     // Leet 13
     // REQ: Romain to Integers
-    pub fn Leet13_Romain2Int(s: String) -> i32 {
-        0 as i32
+    pub fn roman_to_value(roman: char) -> i32 {
+        match roman {
+            'I' => 1,
+            'V' => 5,
+            'X' => 10,
+            'L' => 50,
+            'C' => 100,
+            'D' => 500,
+            'M' => 1000,
+            _ => 0, // Invalid character
+        }
     }
+
+
+    pub fn roman_to_int(s: String) -> i32 {
+        let chars: Vec<char> = s.chars().collect();
+
+        let mut result = 0;
+        let mut i = 0;
+
+        while i < chars.len() {
+            let curr = Self::roman_to_value(chars[i]);
+
+            if i + 1 < chars.len() {
+                let next = Self::roman_to_value(chars[i + 1]);
+
+                if curr < next {
+                    result += next - curr;
+                    i += 2;
+                    continue;
+                }
+            }
+
+            result += curr;
+            i += 1;
+        }
+
+        result
+    }
+    
 }
