@@ -17,7 +17,7 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     #[cfg(feature = "req1")]
     {
-        run_req1();
+        run_req1(); 
         println!("req1 running");
     }
 
@@ -36,7 +36,7 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(feature = "handson")]
     {
         println!("handson running");
-        run_handson(13);
+        run_handson(217);
     }
     
 
@@ -109,7 +109,7 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
 
 
     #[cfg(feature = "handson")]
-    pub fn run_handson(num: i8)
+    pub fn run_handson(num: i16)
     {
         match num {
             3 => {
@@ -119,6 +119,10 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
             13 => {
                 let result = leetcode::Solution::roman_to_int("MCDLXXVI".to_string());
                 println!("Result for Leet13: {}", result);
+            }
+            217 => {
+                let result = leetcode::Solution::contains_duplicate(vec![1,2,3,1]);
+                println!("Result for Leet217: {}", result);
             }
             _ => println!("Invalid input. Please enter a number between 1 and 3."),
         }

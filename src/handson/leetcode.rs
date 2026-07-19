@@ -85,5 +85,27 @@ impl Solution{
 
         result
     }
-    
+
+    pub fn contains_duplicate(nums: Vec<i32>) -> bool {
+        let mut sorted_nums: Vec<i32> = Vec::new();
+        let mut key = nums[0];
+        sorted_nums = nums.clone();
+        for i in 1..nums.len(){
+            key = sorted_nums[i];
+            let mut j = i;
+            while j>0 && key < sorted_nums[j-1]{
+                sorted_nums[j] = sorted_nums[j-1];
+                j-=1;
+            }
+            sorted_nums[j] = key;
+        }
+        println!("Sorted array: {:?}", sorted_nums); 
+
+        for i in 0..sorted_nums.len()-1{
+            if sorted_nums[i] == sorted_nums[i+1]{
+                return true;
+            }
+        }
+        false
+    }
 }
